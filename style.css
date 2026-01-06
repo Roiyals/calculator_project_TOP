@@ -8,3 +8,7 @@
 .operators-and-others button {
   padding: 50px;
 }
+
+.display {
+  display: flex;
+}

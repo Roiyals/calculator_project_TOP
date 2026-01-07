@@ -29,9 +29,15 @@ operatorButtons.forEach((button) => {
   });
 });
 
-// let equalButton = document.querySelector(".equal");
+let equalButton = document.querySelector(".equal");
+equalButton.addEventListener("click", () => {
+  operate(calc.firstNumber, calc.secondNumber, calc.operator);
+});
 
-// let clearButton = document.querySelector(".clear");
+let clearButton = document.querySelector(".clear");
+clearButton.addEventListener("click", () => {
+  clearDisplay();
+});
 
 let display = document.querySelector(".display");
 
@@ -53,10 +59,14 @@ function division(a, b) {
 }
 
 function operate(a, b, operator) {
-  if (operator === "+") return addition(a, b);
-  if (operator === "-") return subtraction(a, b);
-  if (operator === "*") return multiplication(a, b);
-  if (operator === "/") return division(a, b);
+  // Converts string to integer
+  a = +a;
+  b = +b;
+
+  if (operator === "+") calc.equalTo = addition(a, b);
+  if (operator === "-") calc.equalTo = subtraction(a, b);
+  if (operator === "*") calc.equalTo = multiplication(a, b);
+  if (operator === "/") calc.equalTo = division(a, b);
 }
 
 // Functions that displays/clears the screen
@@ -67,6 +77,14 @@ function displayNumber(buttonContent) {
   display.appendChild(number);
 }
 
+function clearDisplay() {
+  display.textContent = "";
+  calc.firstNumber = "";
+  calc.secondNumber = "";
+  calc.operator = "";
+  console.log(calc);
+}
+
 // Function to update the calc object
 
 function updateCalc(button) {
@@ -74,9 +92,15 @@ function updateCalc(button) {
 
   // When clicking operators
   if (button === "+" || button === "-" || button === "*" || button === "/") {
-    calc.operator = button;
-    console.log(calc);
-    return;
+    //Prevents updating calc.operator w/o calc.firstNumber
+    if (calc.firstNumber !== "") {
+      calc.operator = button;
+      console.log(calc);
+      return;
+    } else {
+      console.log(calc);
+      return;
+    }
   }
 
   // When clicking number buttons

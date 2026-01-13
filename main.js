@@ -27,22 +27,22 @@ operatorButtons.forEach((button) => {
   let buttonContent = button.textContent.trim();
 
   button.addEventListener("click", () => {
-    updateCalc(buttonContent);
-
     // Functions as a secondary "equal" for continuous operations
-    if (calc.firstNumber !== "" && calc.secondNumber == !"") {
+    if (calc.firstNumber !== "" && calc.secondNumber !== "") {
       clearDisplayOnly = true;
       operate(calc.firstNumber, calc.secondNumber, calc.operator);
-    } else {
-      return;
     }
+
+    updateCalc(buttonContent);
   });
 });
 
 let equalButton = document.querySelector(".equal");
 equalButton.addEventListener("click", () => {
-  clearDisplayOnly = true;
-  operate(calc.firstNumber, calc.secondNumber, calc.operator);
+  if (calc.firstNumber !== "" && calc.secondNumber !== "") {
+    clearDisplayOnly = true;
+    operate(calc.firstNumber, calc.secondNumber, calc.operator);
+  }
 });
 
 let clearButton = document.querySelector(".clear");
@@ -83,6 +83,7 @@ function operate(a, b, operator) {
   displayNumber(calc.equalTo);
 
   calc.firstNumber = calc.equalTo;
+  calc.operator = "";
   calc.secondNumber = "";
 
   console.log(calc, clearDisplayOnly);

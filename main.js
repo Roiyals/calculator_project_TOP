@@ -9,8 +9,6 @@ let calc = {
   equalTo: "",
 };
 
-let clearDisplayOnly = false;
-
 //====== QUERY SELECTORS ====== //
 let numberButtons = document.querySelectorAll(".number");
 numberButtons.forEach((button) => {
@@ -18,7 +16,7 @@ numberButtons.forEach((button) => {
 
   button.addEventListener("click", () => {
     updateCalc(buttonContent);
-    displayNumber(buttonContent);
+    // displayNumber(buttonContent); Old code that displays number by creating multiple <p> elements
   });
 });
 
@@ -29,7 +27,6 @@ operatorButtons.forEach((button) => {
   button.addEventListener("click", () => {
     // Functions as a secondary "equal" for continuous operations
     if (calc.firstNumber !== "" && calc.secondNumber !== "") {
-      clearDisplayOnly = true;
       operate(calc.firstNumber, calc.secondNumber, calc.operator);
     }
 
@@ -40,7 +37,6 @@ operatorButtons.forEach((button) => {
 let equalButton = document.querySelector(".equal");
 equalButton.addEventListener("click", () => {
   if (calc.firstNumber !== "" && calc.secondNumber !== "") {
-    clearDisplayOnly = true;
     operate(calc.firstNumber, calc.secondNumber, calc.operator);
   }
 });
@@ -79,7 +75,7 @@ function operate(a, b, operator) {
   if (operator === "*") calc.equalTo = multiplication(a, b);
   if (operator === "/") calc.equalTo = division(a, b);
 
-  reset();
+  clearDisplayOnly();
   displayNumber(calc.equalTo);
 
   calc.firstNumber = calc.equalTo;
@@ -91,29 +87,28 @@ function operate(a, b, operator) {
 
 // Functions that displays/clears/resets the screen
 
-function displayNumber(buttonContent) {
-  let number = document.createElement("p");
-  number.textContent += buttonContent;
-  display.appendChild(number);
+function displayNumber(value) {
+  // Old code that displays number by creating multiple <p> elements
+  // let number = document.createElement("p");
+  // number.textContent += buttonContent;
+  // display.appendChild(number);
+
+  display.textContent = value;
 }
 
 function reset() {
-  if (clearDisplayOnly) {
-    display.textContent = "";
-    clearDisplayOnly = false;
-    console.log(calc, clearDisplayOnly);
-  } else {
-    // Clears display and resets calc
-    display.textContent = "";
-    calc = {
-      firstNumber: "",
-      secondNumber: "",
-      operator: "",
-      equalTo: "",
-    };
-    clearDisplayOnly = false;
-    console.log(calc, clearDisplayOnly);
-  }
+  display.textContent = "";
+  calc = {
+    firstNumber: "",
+    secondNumber: "",
+    operator: "",
+    equalTo: "",
+  };
+  console.log(calc, clearDisplayOnly);
+}
+
+function clearDisplayOnly() {
+  display.textContent = "";
 }
 
 // Function to update the calc object
@@ -124,7 +119,6 @@ function updateCalc(button) {
     //Prevents updating calc.operator w/o calc.firstNumber
     if (calc.firstNumber !== "") {
       calc.operator = button;
-      clearDisplayOnly = true;
       console.log(calc, clearDisplayOnly);
       return;
     } else {
@@ -136,9 +130,11 @@ function updateCalc(button) {
   // When clicking number buttons
   if (calc.operator === "") {
     calc.firstNumber += button;
+    displayNumber(calc.firstNumber);
   } else {
-    reset(); //Clears display then updates it with the calc.secondNumber
+    clearDisplayOnly();
     calc.secondNumber += button;
+    displayNumber(calc.secondNumber);
   }
 
   console.log(calc, clearDisplayOnly);

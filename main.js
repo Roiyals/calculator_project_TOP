@@ -9,13 +9,22 @@ let calc = {
   equalTo: "",
 };
 
+let justOperated = false;
+
 //====== QUERY SELECTORS ====== //
 let numberButtons = document.querySelectorAll(".number");
 numberButtons.forEach((button) => {
   let buttonContent = button.textContent.trim();
 
   button.addEventListener("click", () => {
+    // Resets the calc when clicking number buttons AFTER operating (instead of appending them)
+    if (calc.equalTo !== "" && justOperated === true) {
+      justOperated = false;
+      reset();
+    }
+
     updateCalc(buttonContent);
+
     // displayNumber(buttonContent); Old code that displays number by creating multiple <p> elements
   });
 });
@@ -31,6 +40,7 @@ operatorButtons.forEach((button) => {
     }
 
     updateCalc(buttonContent);
+    justOperated = false; //Prevents resetting when chaining a calculation
   });
 });
 
@@ -65,6 +75,11 @@ function division(a, b) {
   return a / b;
 }
 
+function roundTo(num) {
+  const factor = Math.pow(10, 10);
+  return Math.round(num * factor) / factor;
+}
+
 function operate(a, b, operator) {
   // Converts string to integer
   a = +a;
@@ -73,16 +88,26 @@ function operate(a, b, operator) {
   if (operator === "+") calc.equalTo = addition(a, b);
   if (operator === "-") calc.equalTo = subtraction(a, b);
   if (operator === "*") calc.equalTo = multiplication(a, b);
-  if (operator === "/") calc.equalTo = division(a, b);
+  if (operator === "/") {
+    if (b === 0) {
+      reset();
+      display.textContent = "You can't divide with 0. Silly!";
+      return;
+    } else {
+      calc.equalTo = division(a, b);
+    }
+  }
 
   clearDisplayOnly();
+  calc.equalTo = roundTo(calc.equalTo);
   displayNumber(calc.equalTo);
 
   calc.firstNumber = calc.equalTo;
   calc.operator = "";
   calc.secondNumber = "";
+  justOperated = true;
 
-  console.log(calc, clearDisplayOnly);
+  console.log(calc);
 }
 
 // Functions that displays/clears/resets the screen
@@ -97,14 +122,15 @@ function displayNumber(value) {
 }
 
 function reset() {
-  display.textContent = "";
+  display.textContent = "0";
   calc = {
     firstNumber: "",
     secondNumber: "",
     operator: "",
     equalTo: "",
   };
-  console.log(calc, clearDisplayOnly);
+  justOperated = false;
+  console.log(calc);
 }
 
 function clearDisplayOnly() {
@@ -119,10 +145,10 @@ function updateCalc(button) {
     //Prevents updating calc.operator w/o calc.firstNumber
     if (calc.firstNumber !== "") {
       calc.operator = button;
-      console.log(calc, clearDisplayOnly);
+      console.log(calc);
       return;
     } else {
-      console.log(calc, clearDisplayOnly);
+      console.log(calc);
       return;
     }
   }
@@ -137,5 +163,5 @@ function updateCalc(button) {
     displayNumber(calc.secondNumber);
   }
 
-  console.log(calc, clearDisplayOnly);
+  console.log(calc);
 }

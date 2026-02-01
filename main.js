@@ -153,12 +153,34 @@ function updateCalc(button) {
     }
   }
 
+  // Prevents multiple decimal points and appends 0
+  function decimalPoint(value) {
+    if (button === "." && value.includes(".")) {
+      return false;
+    }
+    return true;
+  }
+
+  function appendZero(value) {
+    if (button === "." && value === "") {
+      return false;
+    }
+    return true;
+  }
+
   // When clicking number buttons
   if (calc.operator === "") {
+    if (!appendZero(calc.firstNumber)) return (calc.firstNumber += "0.");
+    if (!decimalPoint(calc.firstNumber)) return;
     calc.firstNumber += button;
     displayNumber(calc.firstNumber);
   } else {
-    clearDisplayOnly();
+    if (calc.secondNumber === "") {
+      clearDisplayOnly();
+    }
+    appendZero(calc.secondNumber);
+    if (!appendZero(calc.secondNumber)) return (calc.firstNumber += "0.");
+    if (!decimalPoint(calc.secondNumber)) return;
     calc.secondNumber += button;
     displayNumber(calc.secondNumber);
   }

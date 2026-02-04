@@ -9,6 +9,8 @@ let calc = {
   equalTo: "",
 };
 
+let key = "";
+
 let justOperated = false;
 
 //====== QUERY SELECTORS ====== //
@@ -54,6 +56,11 @@ equalButton.addEventListener("click", () => {
 let clearButton = document.querySelector(".clear");
 clearButton.addEventListener("click", () => {
   reset();
+});
+
+let backSpaceKey = document.querySelector(".backspace");
+backSpaceKey.addEventListener("click", () => {
+  backSpace();
 });
 
 let display = document.querySelector(".display");
@@ -110,7 +117,7 @@ function operate(a, b, operator) {
   console.log(calc);
 }
 
-// Functions that displays/clears/resets the screen
+// Functions that manipulates the screen
 
 function displayNumber(value) {
   // Old code that displays number by creating multiple <p> elements
@@ -135,6 +142,12 @@ function reset() {
 
 function clearDisplayOnly() {
   display.textContent = "";
+}
+
+function backSpace() {
+  key = calc.operator === "" ? "firstNumber" : "secondNumber";
+  calc[key] = calc[key].slice(0, -1);
+  display.textContent = calc[key];
 }
 
 // Function to update the calc object
